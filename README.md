@@ -7,18 +7,29 @@ A comprehensive test suite for API and E2E testing using Playwright.
 - 📡 API Testing
 - 🌐 E2E Testing
 - 📊 HTML Reports
+- 🔄 Retry Mechanism
 - 🧩 Modular Structure
+- 🧹 Code Formatting (Prettier)
+- 🔍 Code Linting (ESLint)
+- �� Git Hooks (Husky)
+- 🤖 CI/CD (GitHub Actions)
 
 ## 📋 Prerequisites
 
 - Node.js (v16 or higher)
 - npm or yarn
+- Git
 
 ## 🛠️ Installation
 
 ```bash
 # Install dependencies
 npm install
+# or
+yarn install
+
+# Initialize Git hooks
+npm run prepare
 ```
 
 ## 🏗️ Project Structure
@@ -35,7 +46,11 @@ suber-tests/
 ├── tests/            # Test files
 │   ├── api/
 │   └── e2e/
+├── .github/          # GitHub Actions workflows
+├── .husky/          # Git hooks
 ├── playwright.config.ts
+├── .eslintrc.json    # ESLint configuration
+├── .prettierrc       # Prettier configuration
 └── package.json
 ```
 
@@ -43,21 +58,52 @@ suber-tests/
 
 ```bash
 # Run all tests
-npx playwright test
+npm test
 
 # Run API tests
-npx playwright test --project=api-tests
+npm run test:api
 
 # Run E2E tests
-npx playwright test --project=e2e-tests
+npm run test:e2e
 
 # Generate report
-npx playwright show-report
+npm run report
 ```
+
+## 🧹 Code Quality
+
+```bash
+# Run ESLint
+npm run lint
+
+# Fix ESLint issues
+npm run lint:fix
+
+# Format code with Prettier
+npm run format
+```
+
+## 🔒 Git Hooks
+
+The project uses Husky and lint-staged to ensure code quality before commits:
+
+- Pre-commit hook runs linting and formatting on staged files
+- Automatically fixes formatting issues
+- Prevents commits with linting errors
+
+## 🤖 CI/CD
+
+The project uses GitHub Actions to ensure code quality:
+
+- Runs on every Pull Request to master branch
+- Checks for linting errors
+- Verifies code formatting
+- Fails if code doesn't meet quality standards
 
 ## ⚙️ Configuration
 
 Environment variables:
+
 - `API_BASE_URL`: Base URL for API tests (default: http://localhost:3030)
 - `UI_BASE_URL`: Base URL for E2E tests (default: http://localhost:3000)
 
@@ -66,7 +112,7 @@ Environment variables:
 Test reports are generated in the `playwright-report` directory. To view them:
 
 ```bash
-npx playwright show-report
+npm run report
 ```
 
 ## 🔧 Development
@@ -84,4 +130,4 @@ npx playwright show-report
 
 ## 📝 License
 
-This project is licensed under the ISC License. 
+This project is licensed under the ISC License.
