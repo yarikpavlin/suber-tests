@@ -1,11 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { mockUserData } from '../../src/api/users';
 import { createUserPayload } from '../../src/api/factories';
-import { User } from '../../src/core/user';
 
 test.describe('/users', () => {
-  const createdUsers: User[] = [];
-
   test('@api GET / positive', async ({ request }, testInfo) => {
     const response = await request.get('/users');
     testInfo.attach(response.url(), {
@@ -32,16 +29,24 @@ test.describe('/users', () => {
     const response = await request.post('/users', {
       data: newUser,
     });
-    createdUsers.push(await response.json());
+
     const returnedUser = await response.json();
     expect(response.status()).toBe(201);
     expect({ email: returnedUser.email, password: returnedUser.password }).toEqual(newUser);
   });
 
   test('@api POST / negative 409', async ({ request }) => {
-    const user = createdUsers[createUserPayload.length - 1];
+    const newUser = createUserPayload();
+
+    await request.post('/users', {
+      data: newUser,
+    });
+
+    // Add a delay to ensure the first request is fully processed
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     const response = await request.post('/users', {
-      data: user,
+      data: newUser,
     });
     expect(response.status()).toBe(409);
   });
