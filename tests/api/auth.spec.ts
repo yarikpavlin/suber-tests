@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { createUserPayload } from '../../src/api/factories';
+import { getApiKeyHeader } from '../../src/api/auth';
 
 test.describe.serial('@api @auth /auth', () => {
   test('POST /signup should create a new user and return a token', async ({ request }) => {
     const userData = createUserPayload();
     const response = await request.post('/auth/signup', {
       data: userData,
+      headers: getApiKeyHeader(),
     });
     const token = response.headers()['authorization'];
 
@@ -17,12 +19,14 @@ test.describe.serial('@api @auth /auth', () => {
     const userData = createUserPayload();
     await request.post('/auth/signup', {
       data: userData,
+      headers: getApiKeyHeader(),
     });
 
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     const response = await request.post('/auth/signup', {
       data: userData,
+      headers: getApiKeyHeader(),
     });
     expect(response.status()).toBe(409);
   });
@@ -31,12 +35,14 @@ test.describe.serial('@api @auth /auth', () => {
     const userData = createUserPayload();
     await request.post('/auth/signup', {
       data: userData,
+      headers: getApiKeyHeader(),
     });
 
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const response = await request.post('/auth/login', {
       data: userData,
+      headers: getApiKeyHeader(),
     });
     const token = response.headers()['authorization'];
 
@@ -48,6 +54,7 @@ test.describe.serial('@api @auth /auth', () => {
     const userData = createUserPayload();
     const response = await request.post('/auth/login', {
       data: userData,
+      headers: getApiKeyHeader(),
     });
     expect(response.status()).toBe(401);
   });
@@ -56,12 +63,14 @@ test.describe.serial('@api @auth /auth', () => {
     const userData = createUserPayload();
     await request.post('/auth/login', {
       data: userData,
+      headers: getApiKeyHeader(),
     });
 
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const response = await request.post('/auth/login', {
       data: { ...userData, password: 'incorrect' },
+      headers: getApiKeyHeader(),
     });
     expect(response.status()).toBe(401);
   });
