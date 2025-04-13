@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test';
 import { createUserPayload } from '../../src/api/factories';
-import { getApiKeyHeader } from '../../src/api/auth';
 import { test } from '../../src/fixtures/test';
 
 test.describe.serial('@api @auth /auth', () => {
