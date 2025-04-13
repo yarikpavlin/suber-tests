@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { createUserPayload } from '../../src/api/factories';
+import { test } from '../../src/fixtures/test';
 
 test.describe.serial('@api @auth /auth', () => {
   test('POST /signup should create a new user and return a token', async ({ request }) => {

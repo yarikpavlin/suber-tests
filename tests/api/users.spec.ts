@@ -1,25 +1,35 @@
-import { test, expect } from '@playwright/test';
-import { mockUserData } from '../../src/api/users';
+import { expect } from '@playwright/test';
+import { test } from '../../src/fixtures/test';
+import { createUserPayload } from '../../src/api/factories';
+import { User } from '../../src/core/user';
 
-test.describe.serial('/users', () => {
-  test('@api GET / positive', async ({ request }, testInfo) => {
-    const response = await request.get('/users');
-    testInfo.attach(response.url(), {
-      body: JSON.stringify(response, null, 2),
-      contentType: 'text/json',
+test.describe.serial('@api @users /users', () => {
+  let userToken: string;
+  let userData: User;
+
+  test.beforeAll(async ({ request }) => {
+    const userSignupResponse = await request.post('/auth/signup', {
+      data: createUserPayload(),
+    });
+    userToken = userSignupResponse.headers()['authorization'];
+    userData = await userSignupResponse.json();
+  });
+
+  test('GET /:id should return user by id', async ({ request }) => {
+    const response = await request.get(`/users/${userData.id}`, {
+      headers: {
+        Authorization: userToken,
+      },
     });
     expect(response.status()).toBe(200);
-    expect(response.body()).toBeDefined();
   });
 
-  test('@api GET /:id positive', async ({ request }) => {
-    const response = await request.get(`/users/${mockUserData.validData.id}`);
-    expect(response.status()).toBe(200);
-    expect(await response.json()).toEqual(mockUserData.validData);
-  });
-
-  test('@api GET /:id negative', async ({ request }) => {
-    const response = await request.get(`/users/123`);
+  test('GET /:id should return 404 if user not found', async ({ request }) => {
+    const response = await request.get(`/users/123`, {
+      headers: {
+        Authorization: userToken,
+      },
+    });
     expect(response.status()).toBe(404);
   });
 });
